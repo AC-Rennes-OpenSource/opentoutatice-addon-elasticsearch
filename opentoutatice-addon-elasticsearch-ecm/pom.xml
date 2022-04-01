@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>opentoutatice-ecm.elasticsearch</groupId>
 		<artifactId>opentoutatice-elasticsearch-parent</artifactId>
-		<version>4.7-SNAPSHOT</version>
+		<version>4.7.27-RAB-RC01-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>opentoutatice-addon-elasticsearch-ecm</artifactId>
@@ -110,8 +110,6 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
 			</plugin>
-			<!-- <plugin> <groupId>com.jcabi</groupId> <artifactId>jcabi-maven-plugin</artifactId> 
-				</plugin> -->
 		</plugins>
 	</build>
 

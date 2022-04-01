@@ -8,7 +8,7 @@
 	<packaging>pom</packaging>
 	<name>elasticsearch plugin - parent</name>
 	<description>Addon elasticsearch service</description>
-	<version>4.7-SNAPSHOT</version>
+	<version>4.7.27-RAB-RC01-SNAPSHOT</version>
 
 	<properties>
 		<nuxeo.version>6.1.1</nuxeo.version>
@@ -169,26 +169,27 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-release-plugin</artifactId>
-				</plugin>
-			</plugins>
+				<version>2.5.3</version>
+			</plugin>
+		</plugins>
 	</build>
 
 	<scm>
-		<url>https://github.com/osivia/opentoutatice-addon-elasticsearch</url>
-		<connection>scm:git:ssh://git@github.com/osivia/opentoutatice-addon-elasticsearch.git</connection>
-		<developerConnection>scm:git:ssh://git@github.com/osivia/opentoutatice-addon-elasticsearch.git</developerConnection>     
+		<url>https://github.com/AC-Rennes-OpenSource/opentoutatice-addon-elasticsearch</url>
+		<connection>scm:git:https://git@github.com/AC-Rennes-OpenSource/opentoutatice-addon-elasticsearch.git</connection>
+		<developerConnection>scm:git:https://git@github.com/AC-Rennes-OpenSource/opentoutatice-addon-elasticsearch.git</developerConnection>     
 		<tag>HEAD</tag> 
-    </scm>
+	</scm>
 
 	<distributionManagement>
-        <repository>
-            <id>osivia-releases</id>
-            <url>http://www.osivia.org/nexus/content/repositories/osivia-releases</url>
-        </repository>
-        <snapshotRepository>
-            <id>osivia-snapshots</id>
-            <url>http://www.osivia.org/nexus/content/repositories/osivia-snapshots</url>
-        </snapshotRepository>
-    </distributionManagement>
+		<repository>
+			<id>${releaseRepoId}</id>
+			<url>${releaseRepoUrl}</url>
+		</repository>
+		<snapshotRepository>
+			<id>${snapshotRepoId}</id>
+			<url>${snapshotRepoUrl}</url>
+		</snapshotRepository>
+	</distributionManagement>
 
 </project>
