@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>opentoutatice-ecm.elasticsearch</groupId>
 		<artifactId>opentoutatice-elasticsearch-parent</artifactId>
-		<version>RAB-4.7.27</version>
+		<version>RAB-4.7.28-RC01-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>opentoutatice-addon-elasticsearch-ecm</artifactId>

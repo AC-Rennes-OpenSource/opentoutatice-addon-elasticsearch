@@ -8,7 +8,7 @@
 	<packaging>pom</packaging>
 	<name>elasticsearch plugin - parent</name>
 	<description>Addon elasticsearch service</description>
-	<version>RAB-4.7.27</version>
+	<version>RAB-4.7.28-RC01-SNAPSHOT</version>
 
 	<properties>
 		<nuxeo.version>6.1.1</nuxeo.version>
