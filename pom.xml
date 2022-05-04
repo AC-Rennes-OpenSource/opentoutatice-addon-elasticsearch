@@ -11,8 +11,8 @@
 	<version>RAB-4.7.28-RC01-SNAPSHOT</version>
 
 	<properties>
-		<nuxeo.version>6.1.1</nuxeo.version>
-		<nuxeo.opentoutatice.version>4.7.33</nuxeo.opentoutatice.version>
+		<nuxeo.version>RAB-6.1.5</nuxeo.version>
+		<nuxeo.opentoutatice.version>RAB-4.7.44</nuxeo.opentoutatice.version>
 		<elasticsearch.transport.client.version>1.1.2</elasticsearch.transport.client.version>
 		<elasticsearch.rest.client.version>6.6.2</elasticsearch.rest.client.version>
 		<osv.toutatice.automation.client.version>4.7.19</osv.toutatice.automation.client.version>
