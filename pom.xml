@@ -8,11 +8,11 @@
 	<packaging>pom</packaging>
 	<name>elasticsearch plugin - parent</name>
 	<description>Addon elasticsearch service</description>
-	<version>RAB-4.7.28</version>
+	<version>RAB-4.8-SNAPSHOT</version>
 
 	<properties>
-		<nuxeo.version>RAB-6.1.5</nuxeo.version>
-		<nuxeo.opentoutatice.version>RAB-4.7.46</nuxeo.opentoutatice.version>
+		<nuxeo.version>RAB-6.1.6</nuxeo.version>
+		<nuxeo.opentoutatice.version>RAB-4.7.47</nuxeo.opentoutatice.version>
 		<elasticsearch.transport.client.version>1.1.2</elasticsearch.transport.client.version>
 		<elasticsearch.rest.client.version>6.6.2</elasticsearch.rest.client.version>
 		<osv.toutatice.automation.client.version>4.7.19</osv.toutatice.automation.client.version>

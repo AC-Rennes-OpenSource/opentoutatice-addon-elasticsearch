@@ -159,12 +159,22 @@ public class OttcElasticSearchIndexOrAliasConfig extends ElasticSearchIndexConfi
         return super.getName();
     }
 
+    public String getIndexName() {
+        String idxName = null;
+        if(this.aliasConfigured()) {
+            idxName = StringUtils.split(super.getName(), NX_ALIAS_SUFFIX)[0];
+        } else {
+            idxName = super.getName();
+        }
+        return idxName;
+    }
+
     /**
      * Do not create if alias is configured.
      */
     @Override
     public boolean mustCreate() {
-        return this.aliasConfigured() ? false : this.create;
+        return this.create;
     }
 
     public boolean aliasConfigured() {
