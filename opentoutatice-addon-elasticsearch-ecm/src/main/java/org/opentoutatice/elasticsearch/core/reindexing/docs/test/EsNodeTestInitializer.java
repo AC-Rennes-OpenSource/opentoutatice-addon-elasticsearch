@@ -36,7 +36,7 @@ public class EsNodeTestInitializer {
 
             if (BooleanUtils.isTrue(Boolean.valueOf(Framework.getProperty(ReIndexingTestConstants.CREATE_BAD_ALIAS_N_INDEX_ON_STARTUP_TEST)))) {
 
-                client.admin().indices().prepareCreate("idx-tst-bad").get();
+                client.admin().indices().prepareCreate("idx-tst-bad").setSettings(ElasticSearchIndexConfig.DEFAULT_SETTING).get();
                 client.admin().indices().prepareAliases().addAlias("idx-tst-bad", "nxutest-alias").get();
 
                 if (log.isDebugEnabled()) {

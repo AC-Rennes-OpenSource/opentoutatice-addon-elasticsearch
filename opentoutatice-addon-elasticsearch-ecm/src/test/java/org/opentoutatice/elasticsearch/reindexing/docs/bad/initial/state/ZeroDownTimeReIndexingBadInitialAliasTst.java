@@ -48,7 +48,7 @@ import com.google.inject.Inject;
 @RunWith(FeaturesRunner.class)
 @Features({ZeroDownTimeBadInitialAliasConfigFeature.class, RepositoryElasticSearchFeature.class, EmbeddedAutomationServerFeatureWithOsvClient.class})
 @BlacklistComponent("org.nuxeo.elasticsearch.ElasticSearchComponent")
-@Deploy({"org.nuxeo.ecm.automation.test", "org.nuxeo.elasticsearch.core.test"})
+@Deploy({"org.nuxeo.ecm.automation.test", "org.nuxeo.elasticsearch.core.test", "org.nuxeo.ecm.core.event"})
 @LocalDeploy({"fr.toutatice.ecm.platform.elasticsearch", "fr.toutatice.ecm.platform.elasticsearch:elasticsearch-config-test.xml",
         "fr.toutatice.ecm.platform.elasticsearch:usermanger-test.xml", "fr.toutatice.ecm.platform.elasticsearch:log4j.xml"})
 @Jetty(port = 18080)

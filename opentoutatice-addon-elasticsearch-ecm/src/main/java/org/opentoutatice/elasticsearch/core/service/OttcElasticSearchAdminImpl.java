@@ -397,7 +397,7 @@ public class OttcElasticSearchAdminImpl /* extends ElasticSearchAdminImpl */ imp
              }
         }
         // Always update mapping
-        this.updateMapping(conf, dropIfExists);
+        this.updateMapping((OttcElasticSearchIndexOrAliasConfig) conf, dropIfExists);
         // make sure the index is ready before returning
         this.checkClusterHealth(conf.getName());
         
@@ -433,7 +433,7 @@ public class OttcElasticSearchAdminImpl /* extends ElasticSearchAdminImpl */ imp
 //        }
     }
 
-    public void updateMapping(ElasticSearchIndexConfig conf, boolean dropIfExists) {
+    public void updateMapping(OttcElasticSearchIndexOrAliasConfig conf, boolean dropIfExists) {
         log.info(String.format("Creating mapping type: %s on index: %s", conf.getType(), conf.getName()));
         if (log.isDebugEnabled()) {
             log.debug("Using mapping: " + conf.getMapping());
@@ -442,7 +442,6 @@ public class OttcElasticSearchAdminImpl /* extends ElasticSearchAdminImpl */ imp
         if (!dropIfExists && (conf.getRepositoryName() != null)) {
             this.repositoryInitialized.add(conf.getRepositoryName());
         }
-        
         // make sure the index is ready before returning
         this.checkClusterHealth(conf.getName());
     }

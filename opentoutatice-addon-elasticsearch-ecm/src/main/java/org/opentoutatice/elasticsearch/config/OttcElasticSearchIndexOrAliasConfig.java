@@ -162,7 +162,7 @@ public class OttcElasticSearchIndexOrAliasConfig extends ElasticSearchIndexConfi
     public String getIndexName() {
         String idxName = null;
         if(this.aliasConfigured()) {
-            idxName = StringUtils.split(super.getName(), NX_ALIAS_SUFFIX)[0];
+            idxName = StringUtils.substringBefore(super.getName(), NX_ALIAS_SUFFIX);
         } else {
             idxName = super.getName();
         }

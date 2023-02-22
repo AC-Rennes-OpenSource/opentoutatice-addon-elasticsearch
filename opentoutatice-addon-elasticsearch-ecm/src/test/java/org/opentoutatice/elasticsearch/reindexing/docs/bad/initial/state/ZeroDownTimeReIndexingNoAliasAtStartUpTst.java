@@ -72,7 +72,7 @@ public class ZeroDownTimeReIndexingNoAliasAtStartUpTst {
     protected Session automationSession;
 
     @Test
-    public void testReIndexingWithBadInitialEsState() {
+    public void testReIndexingWithAutomaticIndexAliasCreation() {
 
         boolean error = false;
         try {
@@ -81,7 +81,7 @@ public class ZeroDownTimeReIndexingNoAliasAtStartUpTst {
             error = true;
         }
 
-        Assert.assertEquals(true, error);
+        Assert.assertEquals(false, error);
     }
 
     /**
