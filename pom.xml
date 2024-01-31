@@ -15,7 +15,7 @@
 		<nuxeo.opentoutatice.version>RAB-4.7.52</nuxeo.opentoutatice.version>
 		<elasticsearch.transport.client.version>1.1.2</elasticsearch.transport.client.version>
 		<elasticsearch.rest.client.version>6.6.2</elasticsearch.rest.client.version>
-		<osv.toutatice.automation.client.version>4.7.19</osv.toutatice.automation.client.version>
+		<osv.toutatice.automation.client.version>4.7.52</osv.toutatice.automation.client.version>
 		<jcabi.version>0.22.6</jcabi.version>
 		<aspectj.version>1.9.2</aspectj.version>
 		<junit.version>4.12</junit.version>
