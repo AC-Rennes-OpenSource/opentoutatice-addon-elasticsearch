@@ -3,10 +3,10 @@
  */
 package org.opentoutatice.elasticsearch.core.reindexing.docs.index;
 
-import java.io.Serializable;
-
 import org.apache.commons.lang.StringUtils;
 import org.jsoup.helper.Validate;
+
+import java.io.Serializable;
 
 /**
  * Nuxeo is configured with an Es index name <idx_name> but, for full
@@ -48,7 +48,7 @@ public class IndexName implements Serializable, Cloneable {
     }
 
     /**
-     * @return <index-name> or <index-name>-<long_value>
+     * @return <index-name> or <index-name>__<long_value>
      */
     public String value() {
         Validate.notNull(this.namePart);

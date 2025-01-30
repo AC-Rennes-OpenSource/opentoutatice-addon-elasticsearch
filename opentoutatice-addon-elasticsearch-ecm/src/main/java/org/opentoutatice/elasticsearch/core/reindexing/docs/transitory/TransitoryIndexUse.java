@@ -9,7 +9,7 @@ package org.opentoutatice.elasticsearch.core.reindexing.docs.transitory;
  */
 public enum TransitoryIndexUse {
 
-    Read("r-alias"), Write("w-alias");
+    WriteNew("w-new-alias");
 
     private String alias;
 

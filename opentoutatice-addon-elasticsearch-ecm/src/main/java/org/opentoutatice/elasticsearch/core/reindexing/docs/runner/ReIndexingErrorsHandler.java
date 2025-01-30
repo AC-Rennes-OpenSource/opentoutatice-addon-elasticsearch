@@ -3,11 +3,6 @@
  */
 package org.opentoutatice.elasticsearch.core.reindexing.docs.runner;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.concurrent.ExecutionException;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 import org.apache.commons.logging.Log;
@@ -25,6 +20,11 @@ import org.opentoutatice.elasticsearch.core.reindexing.docs.manager.exception.Re
 import org.opentoutatice.elasticsearch.core.reindexing.docs.runner.step.ReIndexingRunnerStep;
 import org.opentoutatice.elasticsearch.core.reindexing.docs.test.constant.ReIndexingTestConstants;
 import org.opentoutatice.elasticsearch.utils.MessageUtils;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.concurrent.ExecutionException;
 
 /**
  * @author david

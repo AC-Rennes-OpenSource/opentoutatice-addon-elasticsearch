@@ -13,7 +13,6 @@ import org.elasticsearch.common.hppc.cursors.ObjectCursor;
 import org.nuxeo.elasticsearch.config.ElasticSearchIndexConfig;
 import org.nuxeo.runtime.api.Framework;
 import org.opentoutatice.elasticsearch.core.reindexing.docs.test.constant.ReIndexingTestConstants;
-import org.opentoutatice.elasticsearch.core.reindexing.docs.transitory.TransitoryIndexUse;
 
 /**
  * @author david
@@ -45,7 +44,6 @@ public class EsNodeTestInitializer {
             }
 
             if (BooleanUtils.isTrue(Boolean.valueOf(Framework.getProperty(ReIndexingTestConstants.CREATE_READ_ALIAS_ON_STARTUP_TEST)))) {
-                client.admin().indices().prepareAliases().addAlias("idx-tst", TransitoryIndexUse.Read.getAlias()).get();
 
                 if (log.isDebugEnabled()) {
                     log.debug("BAD yet existing alias [r-alias] created on [idx-tst]");

@@ -3,14 +3,6 @@
  */
 package org.opentoutatice.elasticsearch.core.reindexing.docs.automation;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.concurrent.ExecutionException;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -20,9 +12,15 @@ import org.nuxeo.ecm.automation.core.annotations.OperationMethod;
 import org.nuxeo.ecm.core.api.impl.blob.StringBlob;
 import org.opentoutatice.elasticsearch.core.reindexing.docs.es.state.EsState;
 import org.opentoutatice.elasticsearch.core.reindexing.docs.es.state.EsStateChecker;
+import org.opentoutatice.elasticsearch.core.reindexing.docs.index.IndexName;
 import org.opentoutatice.elasticsearch.core.reindexing.docs.manager.IndexNAliasManager;
 import org.opentoutatice.elasticsearch.core.reindexing.docs.manager.ReIndexingRunnerManager;
 import org.opentoutatice.elasticsearch.utils.MessageUtils;
+
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.concurrent.ExecutionException;
+import java.util.regex.Pattern;
 
 /**
  * @author david
@@ -33,6 +31,8 @@ public class CleanESIndices {
     public static final String ID = "Documents.CleanESIndices";
 
     private static final Log log = LogFactory.getLog(CleanESIndices.class);
+
+    private static final Pattern ORPHAN_INDEX_PATTERN = Pattern.compile(".*" + IndexName.SEPARATOR + "[0-9]{13,}");
 
     @OperationMethod
     public StringBlob run() throws Exception {
@@ -101,13 +101,28 @@ public class CleanESIndices {
 
         Set<String> linkedIndices = new HashSet<String>();
         for (Entry<String, List<String>> alias : aliases.entrySet()) {
-            linkedIndices.addAll(alias.getValue());
+            Set<String> indicesOfAlias = getNxIndices(alias.getValue());
+            if(CollectionUtils.isNotEmpty(indicesOfAlias)) {
+                linkedIndices.addAll(indicesOfAlias);
+            }
         }
 
         // Indices
-        List<String> indices = esState.getIndices();
+        Set<String> indices = getNxIndices(esState.getIndices());
 
         return CollectionUtils.disjunction(indices, linkedIndices);
+    }
+
+    protected static Set<String> getNxIndices(List<String> indices){
+        Set<String> nxIndices = new HashSet<>();
+        if(indices != null && !indices.isEmpty()){
+            for(String index : indices){
+                if(ORPHAN_INDEX_PATTERN.matcher(index).matches()){
+                    nxIndices.add(index);
+                }
+            }
+        }
+        return nxIndices;
     }
 
 }

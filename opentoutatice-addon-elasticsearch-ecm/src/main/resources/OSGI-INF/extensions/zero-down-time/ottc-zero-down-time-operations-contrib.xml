@@ -13,8 +13,6 @@
 
 		<operation
 			class="org.opentoutatice.elasticsearch.core.reindexing.docs.automation.ReIndexZeroDownTimeES" />
-		<operation
-			class="org.opentoutatice.elasticsearch.core.reindexing.docs.automation.CleanESIndices" />
 
 	</extension>
 

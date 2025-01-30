@@ -18,12 +18,12 @@
  */
 package fr.toutatice.ecm.elasticsearch.fetcher;
 
-import java.util.Map;
-
 import org.elasticsearch.action.search.SearchResponse;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.impl.DocumentModelListImpl;
 import org.nuxeo.elasticsearch.fetcher.Fetcher;
+
+import java.util.Map;
 
 public class TTCEsFetcher extends Fetcher {
 

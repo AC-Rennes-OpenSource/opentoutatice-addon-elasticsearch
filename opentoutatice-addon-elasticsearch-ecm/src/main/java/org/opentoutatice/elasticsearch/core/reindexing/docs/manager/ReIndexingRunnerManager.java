@@ -3,20 +3,11 @@
  */
 package org.opentoutatice.elasticsearch.core.reindexing.docs.manager;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.ExecutionException;
-
-import javax.ws.rs.core.Response.Status.Family;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jsoup.helper.Validate;
 import org.nuxeo.ecm.core.work.api.Work.State;
-import org.nuxeo.ecm.core.work.WorkManagerImpl;
-import org.nuxeo.ecm.core.work.api.Work;
 import org.nuxeo.ecm.core.work.api.WorkManager;
-import org.nuxeo.ecm.core.work.api.WorkManager.Scheduling;
 import org.nuxeo.elasticsearch.api.ElasticSearchAdmin;
 import org.nuxeo.elasticsearch.api.ElasticSearchIndexing;
 import org.nuxeo.runtime.api.Framework;
@@ -32,6 +23,10 @@ import org.opentoutatice.elasticsearch.core.reindexing.docs.manager.exception.Re
 import org.opentoutatice.elasticsearch.core.reindexing.docs.runner.ReIndexingWork;
 import org.opentoutatice.elasticsearch.core.reindexing.docs.runner.step.ReIndexingRunnerStep;
 import org.opentoutatice.elasticsearch.core.service.OttcElasticSearchAdminImpl;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Singleton launching re-indexing works (one work by repository at most).

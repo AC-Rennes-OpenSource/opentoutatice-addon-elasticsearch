@@ -3,11 +3,11 @@
  */
 package org.opentoutatice.elasticsearch.core.reindexing.docs.runner.works;
 
-import java.util.List;
-
 import org.nuxeo.elasticsearch.work.BucketIndexingWorker;
 import org.nuxeo.elasticsearch.work.ScrollingIndexingWorker;
 import org.opentoutatice.elasticsearch.core.reindexing.docs.constant.ReIndexingConstants;
+
+import java.util.List;
 
 /**
  * @author david
@@ -31,6 +31,11 @@ public class ScrollingReIndexingWorker extends ScrollingIndexingWorker {
             return;
         }
         BucketIndexingWorker subWorker = new BucketReIndexingWorker(this.repositoryName, bucket, isLast);
+//        try {
+//            Thread.sleep(90000);
+//        } catch (InterruptedException e) {
+//            throw new RuntimeException(e);
+//        }
         this.getWorkManager().schedule(subWorker);
     }
 }

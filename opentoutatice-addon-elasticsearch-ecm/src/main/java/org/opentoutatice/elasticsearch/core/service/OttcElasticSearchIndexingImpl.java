@@ -3,15 +3,10 @@
  */
 package org.opentoutatice.elasticsearch.core.service;
 
-import static org.elasticsearch.common.xcontent.XContentFactory.jsonBuilder;
-import static org.nuxeo.elasticsearch.ElasticSearchConstants.CHILDREN_FIELD;
-import static org.nuxeo.elasticsearch.ElasticSearchConstants.DOC_TYPE;
-import static org.nuxeo.elasticsearch.ElasticSearchConstants.PATH_FIELD;
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
+import com.codahale.metrics.MetricRegistry;
+import com.codahale.metrics.SharedMetricRegistries;
+import com.codahale.metrics.Timer;
+import com.codahale.metrics.Timer.Context;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.codehaus.jackson.JsonFactory;
@@ -42,15 +37,18 @@ import org.nuxeo.elasticsearch.commands.IndexingCommand.Type;
 import org.nuxeo.runtime.api.Framework;
 import org.nuxeo.runtime.metrics.MetricsService;
 import org.opentoutatice.elasticsearch.api.OttcElasticSearchIndexing;
+import org.opentoutatice.elasticsearch.commands.OttcIndexingCommand;
 import org.opentoutatice.elasticsearch.core.reindexing.docs.es.state.exception.ReIndexingStateException;
 import org.opentoutatice.elasticsearch.core.reindexing.docs.es.state.exception.ReIndexingStatusException;
 import org.opentoutatice.elasticsearch.core.reindexing.docs.manager.ReIndexingRunnerManager;
 import org.opentoutatice.elasticsearch.core.reindexing.docs.manager.exception.ReIndexingException;
 
-import com.codahale.metrics.MetricRegistry;
-import com.codahale.metrics.SharedMetricRegistries;
-import com.codahale.metrics.Timer;
-import com.codahale.metrics.Timer.Context;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import static org.elasticsearch.common.xcontent.XContentFactory.jsonBuilder;
+import static org.nuxeo.elasticsearch.ElasticSearchConstants.*;
 
 /**
  * @author dchevrier <chevrier.david.pro@gmail.com>
@@ -156,14 +154,28 @@ public class OttcElasticSearchIndexingImpl /* extends ElasticSearchIndexingImpl 
             if ((cmd.getType() == Type.DELETE) || (cmd.getType() == Type.UPDATE_DIRECT_CHILDREN)) {
                 continue;
             }
-            if (!docIds.add(cmd.getTargetDocumentId())) {
-                // do not submit the same doc 2 times
-                continue;
+            try {
+                if(!ReIndexingRunnerManager.get().isReIndexingInProgress(cmd.getRepositoryName())) {
+                    if (!docIds.add(cmd.getTargetDocumentId())) {
+                        // do not submit the same doc 2 times
+                        continue;
+                    }
+                } else {
+                    if(!docIds.add(cmd.getTargetDocumentId() + "-" + ((OttcIndexingCommand) cmd).getIndexName())){
+                        // do not submit the same doc 2 times on same index
+                        continue;
+                    }
+                }
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
             }
             try {
                 IndexRequestBuilder idxRequest = this.buildEsIndexingRequest(cmd);
                 if (idxRequest != null) {
                     bulkRequest.add(idxRequest);
+                    if (log.isInfoEnabled()) {
+                        log.info(String.format("To index in bulk request: %s", cmd.getTargetDocumentId()));
+                    }
                 }
             } catch (ClientException | IllegalArgumentException e) {
                 if (e.getCause() instanceof NoSuchDocumentException) {
@@ -262,6 +274,10 @@ public class OttcElasticSearchIndexingImpl /* extends ElasticSearchIndexingImpl 
             log.info("Cancel indexing command because target document does not exists anymore: " + cmd);
             return;
         }
+        if (log.isInfoEnabled()) {
+            log.info(String.format("Index request: curl -XPUT 'http://localhost:9200/%s/%s/%s'",
+                    this.esa.getIndexNameForRepository(cmd.getRepositoryName()), DOC_TYPE, cmd.getTargetDocumentId()));
+        }
         if (log.isDebugEnabled()) {
             log.debug(String.format("Index request: curl -XPUT 'http://localhost:9200/%s/%s/%s' -d '%s'",
                     this.esa.getIndexNameForRepository(cmd.getRepositoryName()), DOC_TYPE, cmd.getTargetDocumentId(), request.request().toString()));
@@ -283,6 +299,9 @@ public class OttcElasticSearchIndexingImpl /* extends ElasticSearchIndexingImpl 
 
     void processDeleteCommandNonRecursive(IndexingCommand cmd) {
         String indexName = this.esa.getIndexNameForRepository(cmd.getRepositoryName());
+        if(cmd instanceof OttcIndexingCommand){
+            indexName = ((OttcIndexingCommand)cmd).getIndexName();
+        }
         DeleteRequestBuilder request = this.esa.getClient().prepareDelete(indexName, DOC_TYPE, cmd.getTargetDocumentId());
         if (log.isDebugEnabled()) {
             log.debug(String.format("Delete request: curl -XDELETE 'http://localhost:9200/%s/%s/%s'", indexName, DOC_TYPE, cmd.getTargetDocumentId()));
@@ -292,6 +311,9 @@ public class OttcElasticSearchIndexingImpl /* extends ElasticSearchIndexingImpl 
 
     void processDeleteCommandRecursive(IndexingCommand cmd) {
         String indexName = this.esa.getIndexNameForRepository(cmd.getRepositoryName());
+        if(cmd instanceof OttcIndexingCommand){
+            indexName = ((OttcIndexingCommand)cmd).getIndexName();
+        }
         // we don't want to rely on target document because the document can be
         // already removed
         String docPath = this.getPathOfDocFromEs(cmd.getRepositoryName(), cmd.getTargetDocumentId());
@@ -350,8 +372,17 @@ public class OttcElasticSearchIndexingImpl /* extends ElasticSearchIndexingImpl 
             XContentBuilder builder = jsonBuilder();
             JsonGenerator jsonGen = factory.createJsonGenerator(builder.stream());
             this.jsonESDocumentWriter.writeESDocument(jsonGen, doc, cmd.getSchemas(), null);
+
+            String indexName = null;
+            if(cmd instanceof OttcIndexingCommand){
+                indexName = ((OttcIndexingCommand) cmd).getIndexName();
+            }
+            if(indexName == null) {
+                indexName = this.esa.getIndexNameForRepository(cmd.getRepositoryName());
+            }
+
             IndexRequestBuilder ret = this.esa.getClient()
-                    .prepareIndex(this.esa.getIndexNameForRepository(cmd.getRepositoryName()), DOC_TYPE, cmd.getTargetDocumentId()).setSource(builder);
+                    .prepareIndex(indexName, DOC_TYPE, cmd.getTargetDocumentId()).setSource(builder);
             if (this.useExternalVersion && (cmd.getOrder() > 0)) {
                 ret.setVersionType(VersionType.EXTERNAL).setVersion(cmd.getOrder());
             }

@@ -18,10 +18,10 @@
  */
 package fr.toutatice.ecm.elasticsearch.helper;
 
+import org.apache.commons.lang.StringUtils;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.apache.commons.lang.StringUtils;
 
 /**
  * A singleton Java pattern is used since this operation might be called very often. Hence, it is important to get

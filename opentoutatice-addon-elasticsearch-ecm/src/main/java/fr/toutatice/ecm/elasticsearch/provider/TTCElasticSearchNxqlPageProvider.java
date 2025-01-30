@@ -3,15 +3,8 @@
  */
 package fr.toutatice.ecm.elasticsearch.provider;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
-import org.nuxeo.ecm.core.api.ClientException;
-import org.nuxeo.ecm.core.api.ClientRuntimeException;
-import org.nuxeo.ecm.core.api.CoreSession;
-import org.nuxeo.ecm.core.api.DocumentModel;
-import org.nuxeo.ecm.core.api.DocumentModelList;
+import fr.toutatice.ecm.elasticsearch.query.TTCNxQueryBuilder;
+import org.nuxeo.ecm.core.api.*;
 import org.nuxeo.ecm.core.query.QueryParseException;
 import org.nuxeo.ecm.platform.query.api.Aggregate;
 import org.nuxeo.ecm.platform.query.api.AggregateDefinition;
@@ -24,7 +17,9 @@ import org.nuxeo.elasticsearch.provider.ElasticSearchNxqlPageProvider;
 import org.nuxeo.elasticsearch.query.NxQueryBuilder;
 import org.nuxeo.runtime.api.Framework;
 
-import fr.toutatice.ecm.elasticsearch.query.TTCNxQueryBuilder;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 
 /**

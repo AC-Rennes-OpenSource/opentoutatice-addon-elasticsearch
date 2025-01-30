@@ -43,12 +43,6 @@ Number of command processed since Nuxeo instance startup: <h:outputText value="#
     <h:outputText
       value="#{esAdmin.bulkIndexingRates}"/>
   </pre>
-  
-  <h3>Orphan indices</h3>
-  <div class="detail">Number of indices no more used by Elasticsearch.</div>
-  <pre class="bubbleBox">
-    <h:outputText value="#{esAdmin.numberOfOrphanIndices()}"/>
-  </pre>
 
   <h3>Elasticsearch documents</h3>
   <div class="detail">Number of documents in all the Elasticsearch index associated with repositories.</div>

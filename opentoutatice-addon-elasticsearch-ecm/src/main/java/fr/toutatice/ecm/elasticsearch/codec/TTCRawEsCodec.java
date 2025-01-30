@@ -13,10 +13,11 @@
  */
 package fr.toutatice.ecm.elasticsearch.codec;
 
-import java.io.IOException;
 import org.codehaus.jackson.JsonGenerator;
 import org.elasticsearch.action.search.SearchResponse;
 import org.nuxeo.ecm.automation.io.services.codec.ObjectCodec;
+
+import java.io.IOException;
 
 public class TTCRawEsCodec extends ObjectCodec<SearchResponse> {
 

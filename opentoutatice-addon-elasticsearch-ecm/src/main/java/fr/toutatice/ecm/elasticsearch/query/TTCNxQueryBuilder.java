@@ -18,9 +18,7 @@
  */
 package fr.toutatice.ecm.elasticsearch.query;
 
-import java.util.ListIterator;
-import java.util.Map;
-
+import fr.toutatice.ecm.elasticsearch.fetcher.TTCEsFetcher;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -36,7 +34,8 @@ import org.nuxeo.ecm.core.api.SortInfo;
 import org.nuxeo.elasticsearch.fetcher.Fetcher;
 import org.nuxeo.elasticsearch.query.NxQueryBuilder;
 
-import fr.toutatice.ecm.elasticsearch.fetcher.TTCEsFetcher;
+import java.util.ListIterator;
+import java.util.Map;
 
 public class TTCNxQueryBuilder extends NxQueryBuilder {
 

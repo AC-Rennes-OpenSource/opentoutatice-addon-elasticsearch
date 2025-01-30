@@ -18,13 +18,10 @@
  */
 package fr.toutatice.ecm.elasticsearch.automation;
 
-import java.security.Principal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import javax.servlet.http.HttpServletRequest;
-
+import fr.toutatice.ecm.elasticsearch.helper.SQLHelper;
+import fr.toutatice.ecm.elasticsearch.query.TTCNxQueryBuilder;
+import fr.toutatice.ecm.elasticsearch.search.TTCSearchResponse;
+import net.sf.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -53,10 +50,11 @@ import org.nuxeo.elasticsearch.api.ElasticSearchAdmin;
 import org.nuxeo.elasticsearch.api.ElasticSearchService;
 import org.nuxeo.runtime.api.Framework;
 
-import fr.toutatice.ecm.elasticsearch.helper.SQLHelper;
-import fr.toutatice.ecm.elasticsearch.query.TTCNxQueryBuilder;
-import fr.toutatice.ecm.elasticsearch.search.TTCSearchResponse;
-import net.sf.json.JSONObject;
+import javax.servlet.http.HttpServletRequest;
+import java.security.Principal;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Operation(id = QueryES.ID, category = Constants.CAT_FETCH, label = "Query via ElasticSerach",
         description = "Perform a query on ElasticSerach instead of Repository")

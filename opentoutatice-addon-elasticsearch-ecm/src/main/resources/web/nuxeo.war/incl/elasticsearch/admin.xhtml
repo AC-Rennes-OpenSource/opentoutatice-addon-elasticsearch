@@ -65,17 +65,6 @@
       <h:inputText name="j_nxql" value="#{esAdmin.nxql}"/>
       <h:commandButton action="#{esAdmin.startReindexNxql}" value="Re-index" disabled="#{esAdmin.isIndexingInProgress()}"/>
     </div>
-    
-    <h4>Clean unused indices (Zero Down Time)</h4>
-
-    <div class="detail-zoom">
-    Si le dépôt est configuré en mode alias (Zero Down Time), supprime les indexes qui ne sont plus utilisés (référencés) par Elasticsearch.<br/>
-    Si le dépôt n'est pas configuré en mode alias, aucune action n'est effectuée (le nettoyage doit être effectué manuellement afin de ne pas supprimer l'index courant).
-    </div>
-    
-    <div class="bubbleBox">
-      <h:commandButton action="#{esAdmin.cleanIndices()}" value="Clean unused indices" disabled="#{esAdmin.isIndexingInProgress()}"/>
-    </div>
 
     <h4>Re-indexing a document and its children</h4>
 

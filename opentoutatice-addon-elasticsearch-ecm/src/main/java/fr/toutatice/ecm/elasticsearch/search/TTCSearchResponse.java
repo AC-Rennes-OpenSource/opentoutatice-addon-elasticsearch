@@ -18,10 +18,10 @@
  */
 package fr.toutatice.ecm.elasticsearch.search;
 
-import java.util.List;
-
 import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.action.search.SearchResponse;
+
+import java.util.List;
 
 public class TTCSearchResponse {
 

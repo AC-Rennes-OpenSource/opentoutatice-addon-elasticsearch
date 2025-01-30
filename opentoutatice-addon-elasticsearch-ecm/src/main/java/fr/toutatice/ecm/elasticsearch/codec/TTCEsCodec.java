@@ -18,30 +18,20 @@
  */
 package fr.toutatice.ecm.elasticsearch.codec;
 
-import java.io.IOException;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Pattern;
-
+import fr.toutatice.ecm.elasticsearch.search.TTCSearchResponse;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonProcessingException;
-import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
-import org.elasticsearch.search.aggregations.bucket.terms.StringTerms;
-import org.elasticsearch.search.aggregations.bucket.terms.Terms.Bucket;
 import org.nuxeo.ecm.automation.io.services.codec.ObjectCodec;
-import org.opentoutatice.elasticsearch.core.reindexing.docs.manager.IndexNAliasManager;
-import org.opentoutatice.elasticsearch.core.reindexing.docs.query.filter.ReIndexingTransientAggregate;
-import org.opentoutatice.elasticsearch.core.reindexing.docs.transitory.TransitoryIndexUse;
-import org.opentoutatice.elasticsearch.utils.MessageUtils;
 
-import fr.toutatice.ecm.elasticsearch.search.TTCSearchResponse;
+import java.io.IOException;
+import java.util.Map;
+import java.util.regex.Pattern;
 
 public class TTCEsCodec extends ObjectCodec<TTCSearchResponse> {
 
@@ -60,9 +50,6 @@ public class TTCEsCodec extends ObjectCodec<TTCSearchResponse> {
     @Override
     @SuppressWarnings("unchecked")
     public void write(JsonGenerator jg, TTCSearchResponse value) throws IOException {
-        // For logs
-        // long startTime = System.currentTimeMillis();
-
         SearchHits upperhits = value.getSearchResponse().getHits();
         Pattern schemasRegex = Pattern.compile(value.getSchemasRegex());
 
@@ -86,27 +73,12 @@ public class TTCEsCodec extends ObjectCodec<TTCSearchResponse> {
 
         jg.writeArrayFieldStart("entries");
 
-        if (this.hasToFilterDuplicate(value.getSearchResponse())) {
-            this.writeDuplicateFilteredEntries(jg, schemasRegex, value.getSearchResponse());
-        } else {
-            this.writeEntries(jg, schemasRegex, searchhits);
-        }
+        this.writeEntries(jg, schemasRegex, searchhits);
+
         jg.writeEndArray();
 
         jg.writeEndObject();
         jg.flush();
-
-        // if(log.isDebugEnabled()) {
-        // long duration = System.currentTimeMillis() - startTime;
-        // log.debug(String.format("Json written: [TJ_%s_TJ] ms", String.valueOf(duration)));
-        // }
-    }
-
-    protected boolean hasToFilterDuplicate(SearchResponse searchResponse) {
-        // Indicates if this response comes from a request built during zero down time re-indexing
-        // (we do not use ReIndexingRunnerManager.get()#isReIndexingInProgress here)
-        return searchResponse.getAggregations() != null ? searchResponse.getAggregations().get(ReIndexingTransientAggregate.DUPLICATE_AGGREGATE_NAME) != null
-                : false;
     }
 
     /**
@@ -119,83 +91,14 @@ public class TTCEsCodec extends ObjectCodec<TTCSearchResponse> {
      */
     protected void writeEntries(JsonGenerator jg, Pattern schemasRegex, SearchHit[] searchhits)
             throws IOException, JsonGenerationException, JsonProcessingException {
-        // For logs
-        // long startTime = System.currentTimeMillis();
-
         for (SearchHit hit : searchhits) {
             this.writeEntry(jg, schemasRegex, hit.getSource());
         }
-
-        // if(log.isDebugEnabled()) {
-        // long duration = System.currentTimeMillis() - startTime;
-        // log.debug(String.format("#writeEntries: [%s] ms", String.valueOf(duration)));
-        // }
     }
-
-    protected void writeDuplicateFilteredEntries(JsonGenerator jg, Pattern schemasRegex, SearchResponse searchResponse)
-            throws JsonGenerationException, JsonProcessingException, IOException {
-        // For logs
-        long startTime = System.currentTimeMillis();
-
-        SearchHit[] searchHits = searchResponse.getHits().getHits();
-        StringTerms duplicateAggs = searchResponse.getAggregations().get(ReIndexingTransientAggregate.DUPLICATE_AGGREGATE_NAME);
-
-        // Build duplicate list
-        List<String> duplicateIds = new LinkedList<String>();
-
-        for (Bucket bucket : duplicateAggs.getBuckets()) {
-            if (bucket.getDocCount() > 1) {
-                duplicateIds.add(bucket.getKey());
-            }
-        }
-
-        if (log.isTraceEnabled()) {
-            log.trace(String.format("List of duplicates: [%s]", MessageUtils.listToString(duplicateIds)));
-        }
-
-        if (duplicateIds.size() == 0) {
-            this.writeEntries(jg, schemasRegex, searchHits);
-        } else {
-            if (log.isDebugEnabled()) {
-                log.debug(String.format("[%s] duplicates ids found: filtering...", duplicateIds.size()));
-            }
-
-            // Write filtering duplicate:
-            // index from which duplicates must be kept (index pointed by transient write alias)
-            // TODO: response can be managed few later time after re-indexing and write alias can not exist anymore
-            String newIdx = IndexNAliasManager.get().getIndexOfAlias(TransitoryIndexUse.Write.getAlias());
-
-            for (SearchHit hit : searchHits) {
-                // Check duplicate
-                Map<String, Object> source = hit.getSource();
-                String uuid = (String) source.get(ReIndexingTransientAggregate.DUPLICATE_AGGREGATE_FIELD);
-
-                if (duplicateIds.contains(uuid)) {
-                    // keep duplicate from new (re-indexing) index
-                    if (StringUtils.equals(newIdx, hit.getIndex())) {
-                        if (log.isTraceEnabled()) {
-                            log.trace(String.format("Keeping duplicate [%s] from index [%s]", uuid, hit.getIndex()));
-                        }
-                        this.writeEntry(jg, schemasRegex, source);
-                    }
-                } else {
-                    this.writeEntry(jg, schemasRegex, source);
-                }
-            }
-        }
-
-        if (log.isDebugEnabled()) {
-            long duration = System.currentTimeMillis() - startTime;
-            log.debug(String.format("#writeDuplicateFilteredEntries done: [%s] ms", String.valueOf(duration)));
-        }
-
-    }
-
 
     /**
      * @param jg
      * @param schemasRegex
-     * @param hit
      * @throws IOException
      * @throws JsonGenerationException
      * @throws JsonProcessingException

@@ -3,15 +3,6 @@
  */
 package org.opentoutatice.elasticsearch.core.reindexing.docs.es.state;
 
-import static org.nuxeo.elasticsearch.ElasticSearchConstants.DOC_TYPE;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.elasticsearch.action.search.SearchRequestBuilder;
@@ -27,6 +18,11 @@ import org.nuxeo.elasticsearch.api.ElasticSearchService;
 import org.nuxeo.elasticsearch.api.EsResult;
 import org.nuxeo.elasticsearch.query.NxQueryBuilder;
 import org.nuxeo.runtime.api.Framework;
+
+import java.util.*;
+import java.util.Map.Entry;
+
+import static org.nuxeo.elasticsearch.ElasticSearchConstants.DOC_TYPE;
 
 /**
  * @author david

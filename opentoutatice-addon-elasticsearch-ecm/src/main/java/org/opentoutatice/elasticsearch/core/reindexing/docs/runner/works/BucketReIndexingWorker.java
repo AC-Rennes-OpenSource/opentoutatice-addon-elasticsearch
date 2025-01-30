@@ -3,10 +3,10 @@
  */
 package org.opentoutatice.elasticsearch.core.reindexing.docs.runner.works;
 
-import java.util.List;
-
 import org.nuxeo.elasticsearch.work.BucketIndexingWorker;
 import org.opentoutatice.elasticsearch.core.reindexing.docs.constant.ReIndexingConstants;
+
+import java.util.List;
 
 
 /**

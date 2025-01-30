@@ -3,10 +3,10 @@
  */
 package org.opentoutatice.elasticsearch.api;
 
-import java.util.Map;
-
 import org.nuxeo.elasticsearch.api.ElasticSearchAdmin;
 import org.opentoutatice.elasticsearch.config.exception.AliasConfigurationException;
+
+import java.util.Map;
 
 /**
  * @author dchevrier <chevrier.david.pro@gmail.com>

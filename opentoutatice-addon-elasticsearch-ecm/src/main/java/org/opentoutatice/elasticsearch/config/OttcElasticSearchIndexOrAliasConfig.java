@@ -1,12 +1,12 @@
 package org.opentoutatice.elasticsearch.config;
 
-import java.io.Serializable;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.nuxeo.common.xmap.annotation.XObject;
 import org.nuxeo.elasticsearch.config.ElasticSearchIndexConfig;
+
+import java.io.Serializable;
 
 /**
  * From now on, Nx works (only) with aliases and configured elasticsearch.indexName points to elsaticsearch alias.

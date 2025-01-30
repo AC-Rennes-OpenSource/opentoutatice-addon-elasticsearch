@@ -3,10 +3,10 @@
  */
 package org.opentoutatice.elasticsearch.core.service;
 
-import static org.nuxeo.elasticsearch.ElasticSearchConstants.DOC_TYPE;
-
-import java.util.List;
-
+import com.codahale.metrics.MetricRegistry;
+import com.codahale.metrics.SharedMetricRegistries;
+import com.codahale.metrics.Timer;
+import com.codahale.metrics.Timer.Context;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -16,11 +16,7 @@ import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.search.aggregations.bucket.MultiBucketsAggregation;
 import org.elasticsearch.search.aggregations.bucket.filter.InternalFilter;
-import org.nuxeo.ecm.core.api.ClientException;
-import org.nuxeo.ecm.core.api.CoreSession;
-import org.nuxeo.ecm.core.api.DocumentModelList;
-import org.nuxeo.ecm.core.api.IterableQueryResult;
-import org.nuxeo.ecm.core.api.SortInfo;
+import org.nuxeo.ecm.core.api.*;
 import org.nuxeo.ecm.core.api.impl.DocumentModelListImpl;
 import org.nuxeo.ecm.platform.query.api.Aggregate;
 import org.nuxeo.ecm.platform.query.api.Bucket;
@@ -32,13 +28,10 @@ import org.nuxeo.elasticsearch.query.NxQueryBuilder;
 import org.nuxeo.runtime.api.Framework;
 import org.nuxeo.runtime.metrics.MetricsService;
 import org.opentoutatice.elasticsearch.api.OttcElasticSearchService;
-import org.opentoutatice.elasticsearch.core.reindexing.docs.manager.ReIndexingRunnerManager;
-import org.opentoutatice.elasticsearch.core.reindexing.docs.query.filter.ReIndexingTransientAggregate;
 
-import com.codahale.metrics.MetricRegistry;
-import com.codahale.metrics.SharedMetricRegistries;
-import com.codahale.metrics.Timer;
-import com.codahale.metrics.Timer.Context;
+import java.util.List;
+
+import static org.nuxeo.elasticsearch.ElasticSearchConstants.DOC_TYPE;
 
 /**
  * @author dchevrier <chevrier.david.pro@gmail.com>
@@ -156,27 +149,6 @@ public class OttcElasticSearchServiceImpl implements OttcElasticSearchService {
         Context stopWatch = this.searchTimer.time();
         try {
             SearchRequestBuilder request = this.buildEsSearchRequest(query);
-
-            // For logs performance
-            long startTime = System.currentTimeMillis();
-
-            // FIXME: Duplicate re-indexing filter is managed, for the moment, for one repository configuration only
-            if (query.getSearchRepositories().size() == 1) {
-                try {
-                    if (ReIndexingRunnerManager.get().isReIndexingInProgress(query.getSearchRepositories().get(0))) {
-                        request = ReIndexingTransientAggregate.get().aggregateDuplicate(request, query.getLimit());
-                    }
-                } catch (InterruptedException e) {
-                    if (log.isErrorEnabled()) {
-                        log.error(e);
-                    }
-                }
-            }
-
-            if (log.isDebugEnabled()) {
-                long duration = System.currentTimeMillis() - startTime;
-                log.debug(String.format("#Add aggregate: [TE_%s_TE] ms", String.valueOf(duration)));
-            }
 
             this.logSearchRequest(request, query);
 

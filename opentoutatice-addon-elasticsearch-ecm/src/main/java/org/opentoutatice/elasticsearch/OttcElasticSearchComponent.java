@@ -3,26 +3,9 @@
  */
 package org.opentoutatice.elasticsearch;
 
-import static org.nuxeo.elasticsearch.ElasticSearchConstants.ES_ENABLED_PROPERTY;
-import static org.nuxeo.elasticsearch.ElasticSearchConstants.INDEXING_QUEUE_ID;
-import static org.nuxeo.elasticsearch.ElasticSearchConstants.REINDEX_ON_STARTUP_PROPERTY;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import javax.transaction.Transaction;
-
+import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.ListeningExecutorService;
+import com.google.common.util.concurrent.MoreExecutors;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.elasticsearch.client.Client;
@@ -62,9 +45,12 @@ import org.opentoutatice.elasticsearch.core.service.OttcElasticSearchAdminImpl;
 import org.opentoutatice.elasticsearch.core.service.OttcElasticSearchIndexingImpl;
 import org.opentoutatice.elasticsearch.core.service.OttcElasticSearchServiceImpl;
 
-import com.google.common.util.concurrent.ListenableFuture;
-import com.google.common.util.concurrent.ListeningExecutorService;
-import com.google.common.util.concurrent.MoreExecutors;
+import javax.transaction.Transaction;
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import static org.nuxeo.elasticsearch.ElasticSearchConstants.*;
 
 /**
  * @author dchevrier <chevrier.david.pro@gmail.com>

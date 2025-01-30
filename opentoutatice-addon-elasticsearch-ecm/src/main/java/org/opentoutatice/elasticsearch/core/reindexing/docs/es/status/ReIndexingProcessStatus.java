@@ -3,13 +3,13 @@
  */
 package org.opentoutatice.elasticsearch.core.reindexing.docs.es.status;
 
-import java.text.DecimalFormat;
-import java.util.Date;
-
 import org.opentoutatice.elasticsearch.core.reindexing.docs.es.state.EsState;
 import org.opentoutatice.elasticsearch.core.reindexing.docs.index.IndexName;
 import org.opentoutatice.elasticsearch.core.reindexing.docs.manager.exception.ReIndexingException;
 import org.opentoutatice.elasticsearch.core.reindexing.docs.runner.step.ReIndexingRunnerStepStateStatus;
+
+import java.text.DecimalFormat;
+import java.util.Date;
 
 /**
  * @author david

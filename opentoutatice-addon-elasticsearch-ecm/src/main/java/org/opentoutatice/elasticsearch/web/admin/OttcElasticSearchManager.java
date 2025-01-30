@@ -3,13 +3,7 @@
  */
 package org.opentoutatice.elasticsearch.web.admin;
 
-import static org.jboss.seam.ScopeType.EVENT;
-
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.ExecutionException;
-
+import fr.toutatice.ecm.platform.core.constants.ExtendedSeamPrecedence;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -28,7 +22,12 @@ import org.opentoutatice.elasticsearch.core.reindexing.docs.es.state.exception.R
 import org.opentoutatice.elasticsearch.core.reindexing.docs.es.state.exception.ReIndexingStatusException;
 import org.opentoutatice.elasticsearch.core.reindexing.docs.manager.exception.ReIndexingException;
 
-import fr.toutatice.ecm.platform.core.constants.ExtendedSeamPrecedence;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
+
+import static org.jboss.seam.ScopeType.EVENT;
 
 
 /**
@@ -67,32 +66,6 @@ public class OttcElasticSearchManager extends ElasticSearchManager {
                this.facesMessages.add(StatusMessage.Severity.ERROR, "Erreur durant le processus de ré-indexation: le processus a été arrêté");
             }
         }
-    }
-    
-    public void cleanIndices() {
-        if(isAliasModeEnabled(getRepositoryName())) {
-            try {
-                this.operationActionBean.doOperation(CleanESIndices.ID);
-            } catch (Exception e) {
-                log.fatal("Error during indexes cleaning: process aborted");
-                this.facesMessages.add(StatusMessage.Severity.ERROR, "Erreur durant le nettoyage des index: le processus a été arrêté");
-            }
-            this.facesMessages.add(StatusMessage.Severity.INFO, "Nettoyage des index terminé");
-        } else {
-            this.facesMessages.add(StatusMessage.Severity.WARN, "Le dépôt n'est pas configuré en mode alias: aucune action effectuée");
-        }
-    }
-    
-    public Integer numberOfOrphanIndices() {
-        Integer nb = Integer.valueOf(0);
-        try {
-            Collection<String> orphanIndices = CleanESIndices.getOrphanIndices();
-            nb = CollectionUtils.isNotEmpty(orphanIndices) ? orphanIndices.size() : nb;
-        } catch (InterruptedException | ExecutionException e) {
-            log.error("Error getting EsStateChecker - check Elasticsearch cluster");
-        }
-        return nb;
-
     }
     
     protected static final String ALIAS_MODE_LABEL = "%s (alias mode enabled - Zero Down Time)"; 

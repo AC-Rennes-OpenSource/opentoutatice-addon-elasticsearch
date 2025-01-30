@@ -3,10 +3,6 @@
  */
 package org.opentoutatice.elasticsearch.core.reindexing.docs.runner;
 
-import java.text.DecimalFormat;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 import org.apache.commons.logging.Log;
@@ -30,6 +26,10 @@ import org.opentoutatice.elasticsearch.core.reindexing.docs.runner.step.ReIndexi
 import org.opentoutatice.elasticsearch.core.reindexing.docs.runner.step.ReIndexingRunnerStepStateStatus;
 import org.opentoutatice.elasticsearch.core.reindexing.docs.test.constant.ReIndexingTestConstants;
 import org.opentoutatice.elasticsearch.core.service.OttcElasticSearchAdminImpl;
+
+import java.text.DecimalFormat;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author david

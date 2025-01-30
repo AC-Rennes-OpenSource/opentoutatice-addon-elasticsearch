@@ -3,24 +3,7 @@
  */
 package org.opentoutatice.elasticsearch.core.service;
 
-import static org.nuxeo.elasticsearch.ElasticSearchConstants.ALL_FIELDS;
-import static org.nuxeo.elasticsearch.ElasticSearchConstants.DOC_TYPE;
-
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Set;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.atomic.AtomicInteger;
-
+import com.google.common.util.concurrent.ListenableFuture;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthResponse;
@@ -47,7 +30,14 @@ import org.opentoutatice.elasticsearch.core.reindexing.docs.manager.ReIndexingRu
 import org.opentoutatice.elasticsearch.core.reindexing.docs.test.EsNodeTestInitializer;
 import org.opentoutatice.elasticsearch.core.reindexing.docs.transitory.TransitoryIndexUse;
 
-import com.google.common.util.concurrent.ListenableFuture;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.*;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import static org.nuxeo.elasticsearch.ElasticSearchConstants.ALL_FIELDS;
+import static org.nuxeo.elasticsearch.ElasticSearchConstants.DOC_TYPE;
 
 /**
  * @author dchevrier <chevrier.david.pro@gmail.com>
@@ -60,6 +50,8 @@ public class OttcElasticSearchAdminImpl /* extends ElasticSearchAdminImpl */ imp
     private static final Log log = LogFactory.getLog(OttcElasticSearchAdminImpl.class);
 
     private static final String TIMEOUT_WAIT_FOR_CLUSTER = "30s";
+
+    public static final String MANY_WRITE_INDICES_INDICATOR = "|";
 
     final AtomicInteger totalCommandProcessed = new AtomicInteger(0);
 
@@ -511,36 +503,10 @@ public class OttcElasticSearchAdminImpl /* extends ElasticSearchAdminImpl */ imp
         // int i = 0;
         List<String> indices = new ArrayList<String>(searchRepositories.size());
         for (String repo : searchRepositories) {
-            try {
-                if (ReIndexingRunnerManager.get().isReIndexingInProgress(repo)) {
-                    for (String idx : this.getReadIndicesForReIndexingRepository(repo)) {
-                        // ret[i++] = idx;
-                        indices.add(idx);
-                    }
-                } else {
-                    // ret[i++] = getConfiguredIndexOrAliasNameForRepository(repo);
-                    indices.add(this.getConfiguredIndexOrAliasNameForRepository(repo));
-                }
-            } catch (InterruptedException e) {
-                // TODO: throw blocking exception if too many InterruptedException
-                if (log.isErrorEnabled()) {
-                    log.error(e);
-                }
-            }
+                // ret[i++] = getConfiguredIndexOrAliasNameForRepository(repo);
+                indices.add(this.getConfiguredIndexOrAliasNameForRepository(repo));
         }
         return indices.toArray(new String[indices.size()]);
-    }
-
-    public String[] getReadIndicesForReIndexingRepository(String repositoryName) {
-        String[] res = null;
-
-        List<String> transientReadIndices = IndexNAliasManager.get().getIndicesOfAlias(TransitoryIndexUse.Read.getAlias());
-        if (transientReadIndices != null) {
-            res = new String[0];
-            res = transientReadIndices.toArray(res);
-        }
-
-        return res;
     }
 
     // For writing use
@@ -549,7 +515,7 @@ public class OttcElasticSearchAdminImpl /* extends ElasticSearchAdminImpl */ imp
         String writeIndexOrAlias = null;
         try {
             if (ReIndexingRunnerManager.get().isReIndexingInProgress(repositoryName)) {
-                writeIndexOrAlias = TransitoryIndexUse.Write.getAlias();
+                writeIndexOrAlias = TransitoryIndexUse.WriteNew.getAlias();
             } else {
                 writeIndexOrAlias = this.getConfiguredIndexOrAliasNameForRepository(repositoryName);
             }
