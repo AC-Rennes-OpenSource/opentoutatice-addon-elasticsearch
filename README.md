@@ -2,7 +2,7 @@
 
 #### Mise en place du Zero Down Time
 ##### Prérequis
-Vérifier l'espace disuae pour le réindexation. La taille des index existants peut-être déterminée par la requête suivante sur le cluster Elasticsearch:
+Vérifier l'espace disque pour le réindexation. La taille des index existants peut-être déterminée par la requête suivante sur le cluster Elasticsearch:
 ```
 curl localhost:9200/_cat/indices?v
 ```
@@ -19,13 +19,13 @@ elasticsearch.indexName=nuxeo-alias
 ```
 
 ###### Threads
-Editer le `nuxeo.conf` et indiquer le nombre de threads que la queue de réindeaxtion en masse des documents doit utiliser (queue non bornée). Par défaut il vaut 4 mais peut être redéfinbi avec la propriété:
+Editer le `nuxeo.conf` et indiquer le nombre de threads que la queue de réindeaxtion en masse des documents doit utiliser (queue non bornée). Par défaut il vaut 4 mais peut être redéfini avec la propriété:
 ```
 elasticsearch.zero.down.time.reindexing.maxThreads=x
 ```
 
 ###### Boucle d'attente
-Par défaut, Nuxeo vérifie toutes les 30 secondes si le ZDT est terminé. Cette valeur peut être modifée par le propriété
+Par défaut, Nuxeo vérifie toutes les 30 secondes si le ZDT est terminé. Cette valeur peut être modifée par la propriété
 `ottc.reindexing.check.loop.period`, valorisée en secondes, du fichier `nuxeo.conf`
 
 
