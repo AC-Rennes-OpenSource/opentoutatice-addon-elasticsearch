@@ -54,7 +54,7 @@ Redémarrer Nuxeo
 
 Accéder à l'interface d'administration d'Elasticsearch dans Nuxeo sous `Centre d'Administration > Elasticsearch`, onglet `Admin`:
 
-![ZDT UI](./zdt-ui.png "Interface d'administration Elasticsearch")
+![ZDT UI](zdt-ui.png "Interface d'administration Elasticsearch")
 
 - Choisir le repository à indexer dans la liste déroulante (si le repository est configuré pour le ZDT, cela est indiqué)
 - Cliquer sur le bouton `Re-index repository`
